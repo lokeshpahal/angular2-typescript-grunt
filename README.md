@@ -2,7 +2,7 @@
 Angular2 Typescript quickstart with Grunt
 
 Setp1: Install required packages
-npm install
+####npm install
 
 Setp2: runt Grunt to build app
-grunt
+####grunt
