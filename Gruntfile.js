@@ -7,27 +7,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-htmljson');
     grunt.loadNpmTasks("grunt-concat-sourcemap");
-    grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-newer');
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        ngtemplates: {
-            app: {
-                src: 'app/**/**.html',
-                dest: 'generated_js/app.templates.js',
-                options: {
-                    prefix: "' + staticUrl + '",
-                    url: function(url) {
-                        return url;
-                    },
-                    bootstrap: function(module, script) {
-                        return 'getscrumbanTemplates = function($templateCache, staticUrl){ ' + script + '};';
-                    }
-                }
-            }
-        },
         ts: {
             app: {
                 src: typescriptFiles,
@@ -46,10 +29,6 @@ module.exports = function(grunt) {
             options: {
                 interval: 1000
             },
-            templates: {
-                files: ["app/**/*.html"],
-                tasks: ["ngtemplates:app"]
-            },
             ts: {
                 files: typescriptFiles,
                 tasks: ["newer:ts:app"]
@@ -61,7 +40,7 @@ module.exports = function(grunt) {
                     expand: false, 
                     flatten: true,
                     src: ["node_modules/es6-shim/es6-shim.min.js"],
-                    dest: 'generated_js/angular2/', 
+                    dest: 'generated_js/angular2/es6-shim.min.js', 
                     filter: 'isFile'
                 }],
             },
@@ -77,7 +56,8 @@ module.exports = function(grunt) {
                     "node_modules/angular2/bundles/angular2-polyfills.min.js",
                     "node_modules/systemjs/dist/system.src.js",
                     "node_modules/rxjs/bundles/Rx.min.js",
-                    "node_modules/angular2/bundles/angular2.min.js"
+                    "node_modules/angular2/bundles/angular2.min.js",
+                    "js/http.min.js"
                 ],
                 dest: "generated_js/angular2/angular2.js"
             }
@@ -89,11 +69,10 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "generated_js/angular2/angular2.min.js": ["generated_js/angular2/angular2.js"],
-                    "generated_js/app.templates.min.js": ["generated_js/app.templates.js"]
+                    "generated_js/angular2/angular2.min.js": ["generated_js/angular2/angular2.js"]
                 }
             }
         }
     });
-    return grunt.registerTask("default", ["ts", "ngtemplates", "copy", "htmljson", "concat", "uglify"]);
+    return grunt.registerTask("default", ["ts", "copy", "concat", "uglify"]);
 };
